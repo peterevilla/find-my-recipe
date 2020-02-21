@@ -1,32 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import { withFormik, Form, Field } from "formik";
+import { withFormik, Form, Field, formikBag } from "formik";
 
 
 
-const Search = props => {
-console.log(props.values)
+const Search = ({ values, status }) => {
+
 const [data, setData] = useState([])
-const [protein, setProtein] = useState(props.values.protein)
-const [vegetable, setVegetable] = useState(props.values.vegetable)
-const [other, setOther] = useState(props.values.other)
+const [protein, setProtein] = useState('')
+const [vegetable, setVegetable] = useState('')
+const [other, setOther] = useState('')
 
 
 
-// const callBack = () => {
-//     axios
-//       .get(
-//         `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${protein},+${vegetable},+${other}&number=10&apiKey=e1c6a0a52d804fa08d866fb8346ee0f2`
-//       )
-//       .then(response => {
-//         setData(response.data);
-//       })
-//       .catch(error => console.log(error));
-//   };
+const callBack = () => {
+    
+    setProtein(values.protein)
+    setVegetable(values.vegetable)
+    setOther(values.other)
+    axios
+      .get(
+        `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${protein},+${vegetable},+${other}&number=10&apiKey=e1c6a0a52d804fa08d866fb8346ee0f2`
+      )
+      .then(response => {
+        setData(response.data);
 
-//   useEffect(callBack, []);
-  console.log(protein);
+      })
+      .catch(error => console.log(error));
+  };
 
+  useEffect(callBack, [values]);
+  
+console.log(data)
 
 return(
 
@@ -48,6 +53,12 @@ return(
             <button>Search!</button>
         </label>
     </Form>
+    <div>
+
+        {data.map(ele => (
+            <img src={ele.image}/>
+        ))}
+    </div>
 </div>
 )
 }
@@ -57,5 +68,11 @@ export default withFormik({
       protein: "",
       vegetable: "",
       other: "",
-    })
+    }),
+    handleSubmit: (values, formikBag) => {
+    
+        console.log("Submitting!", values)
+        // POST body === {}
+    
+      }
   })(Search);
