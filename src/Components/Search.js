@@ -29,7 +29,7 @@ const callBack = () => {
       .catch(error => console.log(error));
   };
 
-  useEffect(callBack, [values]);
+//   useEffect(callBack, [values]);
   
 console.log(data)
 
@@ -69,9 +69,10 @@ export default withFormik({
       vegetable: "",
       other: "",
     }),
-    handleSubmit: (values, formikBag) => {
+    handleSubmit: (values, { resetForm, setStatus } ) => {
     
         console.log("Submitting!", values)
+        resetForm()
         // POST body === {}
     
       }
